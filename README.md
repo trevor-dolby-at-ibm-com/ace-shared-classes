@@ -47,3 +47,69 @@ cp ace-shared-classes/SharedJava.jar /tmp/ace-shared-classes-work-dir/shared-cla
 2022-10-28 14:29:55.660     48 Hello from ClassThatMustBeShared!
 ```
 
+## Container build
+
+The local build approach will also work in a Dockerfile, with appropriate adjustments for work directory names and so on.
+Containers built this way will have the SharedJava JAR already in place for the server to pick up, and so no further 
+configuration is needed.
+
+This approach will also work for CP4i custom containers using /home/aceuser/ace-server as the work directory into which
+the BAR is deployed and SharedJava JAR is copied.
+
+## CP4i configuration with SharedJava in the BAR file
+
+```
+additionalSharedClassesDirectories: '{SharedJavaLibrary}'
+```
+
+Use DemoApplication/DemoApplicationWithSharedJavaLibrary.bar as the application, and the server should start up and print the "Hello" lines
+as expected:
+```
+2022-10-28 19:52:22.258844: BIP9906I: Reading deployed resources.
+2022-10-28 19:52:22.269136: BIP9907I: Initializing deployed resources.
+2022-10-28 19:52:22.269514: BIP8099I: Shared library used for plugins: SharedJavaLibrary - will not be available to applications
+2022-10-28 19:52:22.344920: BIP2155I: About to 'Initialize' the deployed resource 'DemoApplication' of type 'Application'.
+2022-10-28T19:52:22.542Z Integration server not ready yet
+2022-10-28 19:52:24.153262: BIP2155I: About to 'Start' the deployed resource 'DemoApplication' of type 'Application'.
+2022-10-28 19:52:24.153938: BIP2269I: Deployed resource 'TimerFlow' (uuid='TimerFlow',type='MessageFlow') started successfully.
+2022-10-28 19:52:26.246 26
+2022-10-28 19:52:26.351 26 ClassThatMustBeShared loaded with correct classloader: com.ibm.broker.classloading.SharedClassLoader
+2022-10-28 19:52:26.442 26
+2022-10-28 19:52:26.446 26 Hello from ClassThatMustBeShared!
+2022-10-28T19:52:27.551Z Integration server not ready yet
+2022-10-28 19:52:29.542 26 Hello from ClassThatMustBeShared!
+2022-10-28 19:52:31.653796: BIP2866I: IBM App Connect Enterprise administration security is authentication, authorization file.
+2022-10-28 19:52:31.842192: BIP3132I: The HTTP Listener has started listening on port '7600' for 'RestAdmin http' connections.
+2022-10-28 19:52:31.845558: BIP1991I: Integration server has finished initialization.
+```
+
+## CP4i configuration with SharedJava JAR file in a generic files configuration
+
+Create a "generic files" configuration containing SharedJava-configuration.zip and also a server.conf.yaml configuration
+containg the additionalSharedClassesDirectories setting:
+```
+additionalSharedClassesDirectories: '/home/aceuser/generic/extra-classes'
+```
+
+Use DemoApplication/DemoApplication.bar as the application, and the server should start up and print the "Hello" lines
+as expected:
+```
+2022-10-28 19:46:46.842152: BIP9906I: Reading deployed resources.
+2022-10-28 19:46:46.846716: BIP9907I: Initializing deployed resources.
+2022-10-28 19:46:46.848556: BIP2155I: About to 'Initialize' the deployed resource 'DemoApplication' of type 'Application'.
+2022-10-28 19:46:48.709208: BIP2155I: About to 'Start' the deployed resource 'DemoApplication' of type 'Application'.
+2022-10-28 19:46:48.751304: BIP2269I: Deployed resource 'TimerFlow' (uuid='TimerFlow',type='MessageFlow') started successfully.
+2022-10-28 19:46:49.350 25
+2022-10-28 19:46:49.356 25 ClassThatMustBeShared loaded with correct classloader: com.ibm.broker.classloading.SharedClassLoader
+2022-10-28 19:46:49.356 25
+2022-10-28 19:46:49.443 25 Hello from ClassThatMustBeShared!
+2022-10-28T19:46:51.271Z Integration server not ready yet
+2022-10-28 19:46:53.956 25 Hello from ClassThatMustBeShared!
+2022-10-28T19:46:56.346Z Integration server not ready yet
+2022-10-28 19:46:56.456368: BIP2866I: IBM App Connect Enterprise administration security is authentication, authorization file.
+2022-10-28 19:46:56.652188: BIP3132I: The HTTP Listener has started listening on port '7600' for 'RestAdmin http' connections.
+2022-10-28 19:46:56.656252: BIP1991I: Integration server has finished initialization.
+2022-10-28 19:46:59.047 25 Hello from ClassThatMustBeShared!
+2022-10-28T19:47:01.354Z Integration server is ready
+```
+
