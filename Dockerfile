@@ -12,7 +12,7 @@ LABEL "maintainer"="trevor.dolby@ibm.com"
 
 # Copy in and deploy the demo application into the work directory
 #
-# Note that trivial application builds would generally be expected to have
+# Note that normal application builds would generally be expected to have
 # unit tests, and we skip this here because this demo is intended to show
 # Java shared classes usage.
 WORKDIR /tmp/build-dir
