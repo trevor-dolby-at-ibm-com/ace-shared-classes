@@ -53,6 +53,32 @@ The local build approach will also work in a Dockerfile, with appropriate adjust
 Containers built this way will have the SharedJava JAR already in place for the server to pick up, and so no further 
 configuration is needed.
 
+See [Dockerfile](Dockerfile) for details; to build the image, run
+```
+docker build -t ace-shared-classes .
+```
+and then to run the image locally
+```
+$  docker run -e LICENSE=accept --rm -ti ace-shared-classes:latest
+2022-10-28 20:33:39.278992: BIP1990I: Integration server 'ace-server' starting initialization; version '12.0.6.0' (64-bit) 
+2022-10-28 20:33:39.296112: BIP9905I: Initializing resource managers. 
+2022-10-28 20:33:47.176212: BIP9906I: Reading deployed resources. 
+2022-10-28 20:33:47.186588: BIP9907I: Initializing deployed resources. 
+2022-10-28 20:33:47.198916: BIP2155I: About to 'Initialize' the deployed resource 'DemoApplication' of type 'Application'. 
+2022-10-28 20:33:47.712512: BIP2155I: About to 'Start' the deployed resource 'DemoApplication' of type 'Application'. 
+2022-10-28 20:33:47.713152: BIP2269I: Deployed resource 'TimerFlow' (uuid='TimerFlow',type='MessageFlow') started successfully. 
+2022-10-28 20:33:47.753     47 
+2022-10-28 20:33:47.767     47 ClassThatMustBeShared loaded with correct classloader: com.ibm.broker.classloading.SharedClassLoader
+2022-10-28 20:33:47.769     47 
+2022-10-28 20:33:47.778     47 Hello from ClassThatMustBeShared!
+2022-10-28 20:33:49.027304: BIP2866I: IBM App Connect Enterprise administration security is inactive. 
+2022-10-28 20:33:49.061516: BIP3132I: The HTTP Listener has started listening on port '7600' for 'RestAdmin http' connections. 
+2022-10-28 20:33:49.096320: BIP1991I: Integration server has finished initialization. 
+2022-10-28 20:33:52.795     47 Hello from ClassThatMustBeShared!
+2022-10-28 20:33:57.807     47 Hello from ClassThatMustBeShared!
+```
+or the image can be tagged and pushed to a registry and then run in a container environment such as Kubernetes.
+
 This approach will also work for CP4i custom containers using /home/aceuser/ace-server as the work directory into which
 the BAR is deployed and SharedJava JAR is copied.
 
