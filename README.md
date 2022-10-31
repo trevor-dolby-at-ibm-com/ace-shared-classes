@@ -47,6 +47,35 @@ cp ace-shared-classes/SharedJava.jar /tmp/ace-shared-classes-work-dir/shared-cla
 2022-10-28 14:29:55.660     48 Hello from ClassThatMustBeShared!
 ```
 
+## ACE local build with server.conf.yaml
+
+```
+git clone https://github.com/trevor-dolby-at-ibm-com/ace-shared-classes.git
+mqsicreateworkdir /tmp/ace-shared-classes-work-dir
+ibmint deploy --input-path ace-shared-classes --output-work-directory /tmp/ace-shared-classes-work-dir --project DemoApplicationJava --project DemoApplication
+echo "additionalSharedClassesDirectories: '$PWD/ace-shared-classes'" >> /tmp/ace-shared-classes-work-dir/server.conf.yaml
+```
+
+`IntegrationServer -w /tmp/ace-shared-classes-work-dir` shows
+```
+2022-10-31 12:14:15.739106: BIP1990I: Integration server 'ace-shared-classes-work-dir' starting initialization; version '12.0.7.0' (64-bit)
+2022-10-31 12:14:15.748438: BIP9905I: Initializing resource managers.
+2022-10-31 12:14:18.330068: BIP9906I: Reading deployed resources.
+2022-10-31 12:14:18.333194: BIP9907I: Initializing deployed resources.
+2022-10-31 12:14:18.336440: BIP2155I: About to 'Initialize' the deployed resource 'DemoApplication' of type 'Application'.
+2022-10-31 12:14:18.641088: BIP2155I: About to 'Start' the deployed resource 'DemoApplication' of type 'Application'.
+2022-10-31 12:14:18.643352: BIP2269I: Deployed resource 'TimerFlow' (uuid='TimerFlow',type='MessageFlow') started successfully.
+2022-10-31 12:14:18.650     48
+2022-10-31 12:14:18.652     48 ClassThatMustBeShared loaded with correct classloader: com.ibm.broker.classloading.SharedClassLoader
+2022-10-31 12:14:18.652     48
+2022-10-31 12:14:18.653     48 Hello from ClassThatMustBeShared!
+2022-10-31 12:14:18.988936: BIP2866I: IBM App Connect Enterprise administration security is inactive.
+2022-10-31 12:14:18.995642: BIP3132I: The HTTP Listener has started listening on port '7600' for 'RestAdmin http' connections.
+2022-10-31 12:14:19.001164: BIP1991I: Integration server has finished initialization.
+2022-10-31 12:14:23.663     48 Hello from ClassThatMustBeShared!
+2022-10-31 12:14:28.672     48 Hello from ClassThatMustBeShared!
+```
+
 ## Container build
 
 The local build approach will also work in a Dockerfile, with appropriate adjustments for work directory names and so on.
