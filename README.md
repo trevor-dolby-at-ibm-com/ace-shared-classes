@@ -96,9 +96,9 @@ echo "additionalSharedClassesDirectories: '$PWD/ace-shared-classes'" >> /tmp/ace
 
 ## Container build
 
-The local build approach will also work in a Dockerfile, with appropriate adjustments for work directory names and so on.
-Containers built this way will have the SharedJava JAR already in place for the server to pick up, and so no further 
-configuration is needed.
+The local build approaches will also work in a Dockerfile, with appropriate adjustments for work directory names and 
+so on. Containers built this way will have the SharedJava JAR already in place for the server to pick up, and so no 
+further configuration is needed.
 
 See [Dockerfile](Dockerfile) for details; to build the image, run
 ```
@@ -131,13 +131,19 @@ the BAR is deployed and SharedJava JAR is copied.
 
 ## CP4i configuration with SharedJava in the BAR file
 
+If custom images are not used with CP4i, then the previous approaches are hard to implement, and so the 
+ACE server will need to be configured to look in a shared library (deployed in a BAR file) for shared classes.
+This modifies the server cloassloading to ensure that the shared library contents are used only for shared classes 
+and not as an ordinary shared library.
 
-![]()
-
-
+Setting server.conf.yaml to include
 ```
 additionalSharedClassesDirectories: '{SharedJavaLibrary}'
 ```
+
+results in the following configuration:
+
+![cp4i shlib](images/sc-cp4i-shlib.png)
 
 Use DemoApplication/DemoApplicationWithSharedJavaLibrary.bar as the application, and the server should start up and print the "Hello" lines
 as expected:
@@ -162,14 +168,19 @@ as expected:
 
 ## CP4i configuration with SharedJava JAR file in a generic files configuration
 
+Another CP4i approach that does not rely on custom images is the use of "generic files" configurations, which
+are ZIP files containing arbitrary files and directories to be made available to the integration server. This 
+removes the requirement for the shared classes to be deployed in every BAR file, but applications will still 
+have to be tested with the correct versions of the JAR files to ensure correct operation.
 
-![]()
-
-Create a "generic files" configuration containing SharedJava-configuration.zip and also a server.conf.yaml configuration
-containg the additionalSharedClassesDirectories setting:
+Create a "generic files" configuration containing SharedJava-configuration.zip (with SharedJava.jar in the
+`extra-classes` directory) and also a server.conf.yaml configuration containg the additionalSharedClassesDirectories
+setting:
 ```
 additionalSharedClassesDirectories: '/home/aceuser/generic/extra-classes'
 ```
+
+![cp4i config](images/sc-cp4i-config.png)
 
 Use DemoApplication/DemoApplication.bar as the application, and the server should start up and print the "Hello" lines
 as expected:
