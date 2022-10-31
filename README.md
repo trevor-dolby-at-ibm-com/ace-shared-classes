@@ -1,5 +1,5 @@
 # ace-shared-classes
-Examples of using ACE shared classes with independent servers
+Examples of using ACE shared classes with independent servers running in a VM or a container.
 
 ## Components
 
@@ -8,6 +8,9 @@ being available to it when it calls Class.forName() during flow operation, and a
 load in the shared classloader of an ACE server. This simulates scenarios where a Java class must be shared across a 
 whole server in order to enable process-wide data caching or for other reasons.
 
+![demo application](images/sc-demo-app.png)
+
+
 [ClassThatMustBeShared](SharedJava/src/demo/shared/java/ClassThatMustBeShared.java) resides in the [SharedJava](SharedJava) 
 project and is packaged in several ways to allow for different solutions:
 
@@ -15,9 +18,16 @@ project and is packaged in several ways to allow for different solutions:
 - [SharedJava.jar](SharedJava.jar) is a standard Java JAR file that can be copied into the shared-classes directory manually
 - [SharedJava-configuration.zip](SharedJava-configuration.zip) is a ZIP file containing SharedJava.jar for use with CP4i
 
-The following scenarios illustrate how these three options can be used.
+The following scenarios illustrate how these three options can be used in various configurations.
 
 ## ACE local build
+
+The ACE server will be run in a local operating system image and so the work directory shared-classes 
+directory can be used:
+
+![work dir](images/sc-work-dir.png)
+
+The shared-classes directory must be created, but the contents will be loaded automatically.
 
 ```
 git clone https://github.com/trevor-dolby-at-ibm-com/ace-shared-classes.git
@@ -48,6 +58,14 @@ cp ace-shared-classes/SharedJava.jar /tmp/ace-shared-classes-work-dir/shared-cla
 ```
 
 ## ACE local build with server.conf.yaml
+
+The ACE server in this scenario will also be run in a local operating system image, but in this 
+case the shared classes search path will be extended to include this repo in order to get the 
+server to pick up SharedJava.jar without having to copy it.
+
+![external directory](images/sc-ext-dir.png)
+
+(assuming this repo is cloned into /git)
 
 ```
 git clone https://github.com/trevor-dolby-at-ibm-com/ace-shared-classes.git
@@ -113,6 +131,10 @@ the BAR is deployed and SharedJava JAR is copied.
 
 ## CP4i configuration with SharedJava in the BAR file
 
+
+![]()
+
+
 ```
 additionalSharedClassesDirectories: '{SharedJavaLibrary}'
 ```
@@ -139,6 +161,9 @@ as expected:
 ```
 
 ## CP4i configuration with SharedJava JAR file in a generic files configuration
+
+
+![]()
 
 Create a "generic files" configuration containing SharedJava-configuration.zip and also a server.conf.yaml configuration
 containg the additionalSharedClassesDirectories setting:
